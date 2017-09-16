@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html 
+xmlns	 	= "http://www.w3.org/1999/xhtml" 
+xmlns:f 	= "http://xmlns.jcp.org/jsf/core" 
+xmlns:h 	= "http://xmlns.jcp.org/jsf/html"
+xmlns:ex	= "http://java.sun.com/jsf/composite/components"
+xmlns:a 	= "http://xmlns.jcp.org/jsf/passthrough"
+xmlns:ui 	= "http://xmlns.jcp.org.jsf.composite"
+
+>
+
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Payment to LA Screen play awards</title>
+		
+		<h:outputStylesheet name="css/stripeStyles.css"></h:outputStylesheet>
+		<h:outputStylesheet name="css/alerts.css"></h:outputStylesheet>
+		<h:outputStylesheet name="css/w3-buttons.css"></h:outputStylesheet>
+		
+		<!--link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"/-->
+		
+		<h:outputScript name="js/jquery-1.8.0.min.js"/>
+		<h:outputScript name="js/alerts.js"/>
+		
+		<script src="https://www.paypalobjects.com/api/checkout.js"/>
+		<!--h:outputScript name="js/payPallCheckout.js" /-->
+		<script src="https://checkout.stripe.com/checkout.js"/>
+		
+		
+		<h:outputScript name="js/pey-pal-button.js"/>
+		<h:outputScript name="js/window-ready-fnc.js"/>
+		<h:outputScript name="js/uploadAndPay.js"/>
+		<h:outputScript name="js/stripeButton.js" target="body"/>
+		<f:metadata>
+    		<f:event listener="#{laSpaPayAndUploadBackingBean.onPreRender}" type="preRenderView" id="fevent"/>
+		</f:metadata>
+	</h:head>
+	<h:body>
+	<!--a href="http://localhost:8080/screenplayawards/">Thank you page - Local Host</a><br/-->
+
+	<div style="width:100%;height:100%;fonts:Arial,Verdana,Helvetica,sans-serif;font-size:12px;overflow-y:auto;overflow-x:auto;" align="center">
+		<fieldset>
+			<!--legend><p>Upload Screen play <span style="color:red">*</span> - required fields</p></legend-->
+		<h:form id="formUploadPay" enctype="multipart/form-data">
+			<h:inputHidden id="token" value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.token}"></h:inputHidden>
+			<h:panelGrid id = "panel" columns = "1" border = "0" cellpadding = "10" cellspacing = "1" width="100%">
+				
+				<h:panelGroup width="100%">
+				<div align="center" style='width:100%;font-size:14px;'>
+				
+ 				<h:panelGroup width="100%">
+			   	<fieldset id="Writersfs" class="field_set" >
+			   		<legend>Writers  <abbr title="Click me to see how to register more then one writer."><h:graphicImage style="cursor:pointer;" onclick="show('WritersInfo')" name="images/Clipboard01.png" /></abbr></legend>
+			   		
+			   		<div align="center" style='width:100%;font-size:14px;'>
+					<h:panelGrid id="Writers"  columns="2" border = "0" cellpadding = "10" cellspacing = "1">
+						<h:inputText 	a:title="Sparate names by coma." 
+									 	a:placeholder="First name - Required" 	
+										id="Firstname" 	
+										onchange="textEntered(this)" 	
+										required="true" 	
+										requiredMessage="Firstname is required field." 
+										value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.firstName}"
+										style="border:1px solid #000000;"/>
+						
+   						<h:inputText a:title="Sparate names by coma." 
+   										a:placeholder="Last name - Required" 	
+   										id="LastName" 	
+   										onchange="textEntered(this)"   	
+   										required="true" 	
+   										requiredMessage="LastName is required field."
+   										value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.lastName}"
+   										style="border:1px solid #000000;"/>
+   										
+   						<h:inputText a:title="Enter only primary writer e-mail." 
+   										a:placeholder="e-Mail - Required" 	
+   										id="e-Mail" 	
+   										onchange="textEntered(this)"  	
+   										required="true" 	
+   										requiredMessage="e-Mail is requred fiel."
+   										value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.eMail}"
+   										style="border:1px solid #000000;"/>
+   										
+   						<h:inputText a:title="Enter only primary writer phone." 
+   										a:placeholder="Phone - optional" 		
+   										id="Phone" 		
+   										onchange="textEntered(this)"  	
+   										required="false" 	
+   										requiredMessage="Phone is requred fiel."
+   										value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.phone}"
+   										style="border:1px solid #000000;"/>
+   					</h:panelGrid>
+   					</div>	
+   				</fieldset>
+   				</h:panelGroup>
+   				<h:panelGroup>
+   					<div class="alert info" id="WritersInfo">
+  						<span class="closebtn">&times;</span>  
+  						<!--strong>Info!</strong><h:inputTextarea width="100%" a:placeholder="Here We will display information about Writers fields."></h:inputTextarea-->
+					If you are registering more than one writer, please separate <span style="color:blue">First names</span> and <span style="color:blue">Last names</span> by commas.<br/> 
+						Example :<br/>
+							 		First name field should be <span style="color:red">Firstname1,Firstname2</span>  <br/>
+							 		Last name  field should be <span style="color:red">LastName1,Lastname2</span>  <br/>
+						Only enter primary writer's e-mail and phone.<br/>
+						In the case you win a price it is your responsibility to split money.<br/>
+					</div>
+				</h:panelGroup>
+   				
+   				<h:panelGroup width="100%">
+   				<fieldset id="Addressfs" class="field_set">
+			   		<legend>Billing address  </legend>
+			   		<div align="center" style='width:100%;font-size:14px;'>
+					<h:panelGrid id="AddressInfo"  columns="2" border = "0" cellpadding = "10" cellspacing = "1">
+						
+						<h:inputTextarea	a:placeholder="Number and street - Required" 
+											rows = "4"	
+											id="Address" 	
+											onchange="textEntered(this)"  
+											required="true" 
+											requiredMessage="Address is required field."
+											value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.address}"
+											style="border:1px solid #000000;"/>
+   						<h:inputText 		
+   											a:placeholder="City - Required" 				
+   											id="City" 		
+   											onchange="textEntered(this)"  
+   											required="true" 
+   											requiredMessage="City is required field."
+   											value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.city}"
+   											style="border:1px solid #000000;"/>
+   											
+   						<h:inputText 		
+   											a:placeholder="Province/State - Required" 		
+   											id="Province" 	
+   											onchange="textEntered(this)"  
+   											required="true" 
+   											requiredMessage="Province/State is required field."
+   											value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.province_state}"
+   											style="border:1px solid #000000;"/>
+   											
+   						<h:inputText 		
+   											a:placeholder="Postal Code - Required" 		
+   											id="Postal" 	
+   											onchange="textEntered(this)"  
+   											required="true" 
+   											requiredMessage="Postal Code is required field."
+   											value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.postalCode}"
+   											style="border:1px solid #000000;"/>
+   											
+   						<h:inputText 		
+   											a:placeholder="Country - Required" 			
+   											id="Country" 	
+   											onchange="textEntered(this)"  
+   											required="true" 
+   											requiredMessage="Country is required field."
+   											value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.country}"
+   											style="border:1px solid #000000;"/>
+   					</h:panelGrid>	
+   					</div>
+   				</fieldset>
+   				</h:panelGroup>
+   				
+   				
+   				<h:panelGroup width="100%">
+   				<fieldset id="ScreenPlayfs" class="field_set">
+			   		<legend><span style="color:red">*</span>Screen Play - PDF files only</legend>
+			   		<!-- 
+			   			<abbr title="Important - Click me to see more."><h:graphicImage style="cursor:pointer;" onclick="show('ScreenPlayInfo')" name="images/Clipboard01.png" /></abbr>
+			   		-->
+			   		<div align="center" style='width:100%;font-size:14px;'>
+					<h:panelGrid id="ScreenPlayInfo"  columns="2" border = "0" cellpadding = "10" cellspacing = "1">
+								
+								<h:inputText 		
+   											a:placeholder="Screen play title - Required" 			
+   											id="ScreenPlayTitle" 	
+   											onchange="textEntered(this)"  
+   											required="true" 
+   											requiredMessage="Screen Play title is required field."
+   											value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.screenPlayTitle}"
+   											style="border:1px solid #000000;"/>
+   											
+   								<h:selectOneMenu
+   											id="Genre" 	
+   											onchange="textEntered(this)"  
+   											required="true" 
+   											requiredMessage="Screen Play Genre is required field."
+   											style="border:1px solid #000000;"
+   											value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.selectedGenre}"
+   											converter="selectItemToStringConverter"
+   											>
+   											<f:selectItems 
+   												value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.genres}" 
+   											/>
+   											<!--f:converter  converterId="selectItemToStringConverter" /-->
+   											
+   								</h:selectOneMenu>
+   								
+   								<h:inputFile
+   										 a:multiple="false" 
+   										 class="w3-button w3-yellow w3-round w3-tiny"  
+   										 style="display:block;border:2px solid #000000;"
+   										 id="file" 
+   										 value="#{laSpaPayAndUploadBackingBean.payAndUploadService.screanPlayFileUpload.file}" 
+   										 validator="#{laSpaPayAndUploadBackingBean.payAndUploadService.screanPlayFileUpload.validateFile}" />
+   								<h:inputTextarea 
+   											a:placeholder="Logline - Required"
+   											id="Logline" 
+   											rows="4"	
+   											onchange="textEntered(this)"  
+   											value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.logLine}"
+   											style="border:1px solid #000000;"/>
+   											
+   								<h:commandButton class="w3-button w3-yellow w3-round w3-tiny" style="display:none;border:2px solid #000000;" value="Upload" action="#{laSpaPayAndUploadBackingBean.upload}" id="uploadFileAjax">
+  							<!--f:ajax execute="file" render="output" onevent="ajaxEvent"/  .screanPlayFileUpload -->
+  								</h:commandButton>
+					
+					</h:panelGrid>
+					</div>
+				</fieldset>
+ 				</h:panelGroup>
+ 				<h:panelGroup>
+   					<div class="alert info" id="ScreenPlayInfo">
+  						<span class="closebtn">&times;</span>  
+						Here goes text to explain how to upload more than one file.<br/>
+						Screen Play and Logline/Synopsis
+					</div>
+				</h:panelGroup>
+ 				
+			    <!--h:panelGroup width="100%">
+   					<fieldset id="ScreenPlayFees" >
+			   		<legend>Script Submission and Analysis Fees</legend>
+			   			<div  style='width:100%;font-size:12px'-->
+				    		<h:panelGroup width="100%">
+   								<fieldset id="ScreenPayfs1" class="field_set">
+			   					<legend><h:outputText id="submissionValue" value = "Submission Fees US $  #{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.payment}"/></legend>
+			   						<div align="left" style='width:100%;font-size:12px'>
+				    					<h:panelGrid id="headerButtons1"  columns="2" border = "0" cellpadding = "10" cellspacing = "1">
+				    						
+				    						<h:panelGroup>
+					   							<h:outputText value = "Total Payment US $  "/>
+					   							<h:inputText readonly="true"  style='width:30%;'  id="totalValue" onchange="updatePaymenttotal();" value="#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.payment}"/>
+					   						</h:panelGroup>
+
+					   						<h:panelGroup>
+					   							<h:outputText id="resubmitingText" value = "#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.resubmitDiscountText}"/>
+					   							<h:selectBooleanCheckbox id="dicauntChck" onclick="resubmitingScript(this);"></h:selectBooleanCheckbox>
+					   						</h:panelGroup>
+					   		
+				    					</h:panelGrid>
+				    				</div>   
+			   					</fieldset>
+			    			</h:panelGroup>
+			    	
+			    		<h:panelGroup width="100%">
+   							<fieldset id="ScreenPayfs2"  class="field_set">
+			   				<legend>Get Script Analysis <h:selectBooleanCheckbox id="scriptAnalysisChck" onclick="scriptAnalysisRequest('analysisSelection',this)"/></legend>
+					   			<div align="center">
+					   				<h:selectOneRadio   onclick = "addScriptAnalysis('analysisSelection')" id="analysisSelection" disabled="true"  value = "#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.selectedAnalysis}">
+   										<f:selectItems 	value = "#{laSpaPayAndUploadBackingBean.payAndUploadService.payAndUploadBusinessObject.scriptAnalysis}"/>
+									</h:selectOneRadio>  
+								</div>
+			   				</fieldset>
+			    		</h:panelGroup>
+			    	
+				 	<!--/div>   
+			   	</fieldset>
+			    </h:panelGroup-->
+ 					
+				
+ 				<h:panelGroup>
+  					<div align="center" style='width:100%;font-size:14px;'>
+					<h:panelGrid id="buttons" columns="2" border = "0" cellpadding = "10" cellspacing = "1">
+						<h:commandButton class="w3-button w3-yellow w3-round w3-tiny" style="border:2px solid #000000;" id = "customButton" value = "Pay by Credit Card"  />
+						<div style="display:block;border:2px solid #000000;" id='paypal-button' class="w3-button w3-yellow w3-round w3-tiny"></div>
+					</h:panelGrid>
+					</div>		
+  				</h:panelGroup>
+
+				</div>
+			 </h:panelGroup>  
+			</h:panelGrid>
+			
+			<h:outputText id="successMessage" value="#{laSpaPayAndUploadBackingBean.payAndUploadService.screanPlayFileUpload.successMessage}"/>
+			<div id="messages">
+				<h:messages id="globalMessages" showSummary= "true" showDetails="false" autoUpdate="true" closable="true"/>
+			</div>
+		</h:form>
+		</fieldset>
+	</div>
+
+	</h:body>
+</html>
