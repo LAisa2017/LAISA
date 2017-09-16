@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd">
+	
+	<bean id="emailHandler" class="www.com.screenplay.awards.eventhandler.LaSpaEmailHandler" init-method="initialize">
+    	
+    	<aop:scoped-proxy proxy-target-class="false" />
+    	
+    	<property name="emailUserId" value="${email.userid}"/>
+    	<property name="emailPassword" value="${email.password}"/>
+    	<property name="mailProviderType" value="GMAIL" />
+    	<property name="admins" value="${email.laisa.administrators}"/>
+    	<!--property name="mailHost" 				value="${props.mail.smtp.host}"/>
+    	<property name="mailSmtpAuth"			value="${props.mail.smtp.auth}"/>
+    	<property name="mailSmtpStarttlEnable" 	value="${props.mail.smtp.starttls.enable}"/>
+    	<property name="mailSmtpPort" 			value="${props.mail.smtp.port}"/-->
+    	
+    </bean>
+    <bean id="eventListener"  class="www.com.screenplay.awards.eventlistener.LaSpaEventListener">
+    	<property name="eventHandler" ref="emailHandler"/>
+    </bean>
+	<bean id="eventPublisher" class="www.com.screenplay.awards.eventpublisher.LsSpaEventPublisher" />
+</beans>
